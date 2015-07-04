@@ -1,4 +1,5 @@
 import re
+import dbimport.table_schemas as ts
 
 def create_table_sql(table):
     """Return all SQL to create a table, incl foreign key constraints"""
@@ -54,11 +55,20 @@ def row_insert_sql(table, row):
     values = []
     for csv_field, value in sorted(row.items()):
         if csv_field in table.csv_col_map:
-            col = table.csv_col_map[csv_field]
-            columns.append(col)
+            col_name = table.csv_col_map[csv_field]
+            columns.append(col_name)
+            col = table.columns[col_name]
+
+            if col.callback is not None:
+                callback_func = getattr(ts, col.callback)
+                value = callback_func(value)
+
+            value = value.strip()
             values.append(value)
+
     col_str = db_format(columns)
     val_str = db_format(values)
     sql = "INSERT INTO {0} ({1}) VALUES {2}"
     sql = sql.format(table.name, col_str, val_str)
+    print(sql)
     return sql

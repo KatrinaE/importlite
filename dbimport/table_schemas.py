@@ -29,7 +29,7 @@ class Table:
 
 class Column:
     """Defines a database column"""
-    def __init__(self, name, col_type, csv_name=None):
+    def __init__(self, name, col_type, csv_name=None, callback=None):
         """
         Arguments:
         name -- string -- column name to use in database
@@ -44,6 +44,7 @@ class Column:
         self.name = name
         self.col_type = col_type
         self.csv_name = csv_name
+        self.callback = callback
 
 
 class ForeignKey:
