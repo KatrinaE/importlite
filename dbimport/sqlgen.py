@@ -1,0 +1,64 @@
+import re
+
+def create_table_sql(table):
+    """Return all SQL to create a table, incl foreign key constraints"""
+    create_sql = basic_create_table_sql(table)
+    foreign_key_sql = foreign_key_constraint_sql(table)
+
+    create_sql = re.sub('\);$', ', ', create_sql)
+    sql = create_sql + foreign_key_sql
+    sql = re.sub(', $', '', sql) + ");"
+    return sql
+
+
+def basic_create_table_sql(table):
+    """Return the SQL to create a table from the given schema.
+
+    Does not include foreign keys or other constraints, only the SQL
+    to make columns of the given name/type combinations.
+    """
+    sql = "CREATE TABLE {name} (".format(name=table.name)
+    for col in sorted(table.columns.values()):
+        sql += "{fn} {ff}, ".format(fn=col.name, ff=col.col_type)
+
+    sql = re.sub(', $', '', sql) + ");"
+    return sql
+
+
+def foreign_key_constraint_sql(table):
+    """Return the SQL to add foreign key constraints to a given table"""
+    sql = ''
+    for foreign_key in sorted(table.foreign_keys.values()):
+        sql += "FOREIGN KEY({fn}) REFERENCES {tn}({kc}), ".format(
+            fn=foreign_key.from_col,
+            tn=foreign_key.to_table.name,
+            kc=foreign_key.to_col
+        )
+    return sql
+
+
+def db_format(values):
+    return "'{0}'".format("','".join(values))
+
+
+def remove_commas(row):
+    """Remove commas from values because sqlite can't handle them"""
+    for field, value in row.items():
+        row[field] = re.sub(',', '', value)
+    return row
+
+
+def row_insert_sql(table, row):
+    """Return the SQL to add the given row to the given table"""
+    columns = []
+    values = []
+    for csv_field, value in sorted(row.items()):
+        if csv_field in table.csv_col_map:
+            col = table.csv_col_map[csv_field]
+            columns.append(col)
+            values.append(value)
+    col_str = db_format(columns)
+    val_str = db_format(values)
+    sql = "INSERT INTO {0} ({1}) VALUES {2}"
+    sql = sql.format(table.name, col_str, val_str)
+    return sql
