@@ -117,18 +117,32 @@ It's alright to blindly split on the '/'; none of values have
 additional forward slashes.
 """
 inspection_subject_table = Table('r_inspection_subject')
+
+def split_inspection_subject(inspection_str):
+    inspection_tuple = inspection_str.split('/')
+    inspection_subject = inspection_tuple[0]
+    return inspection_subject
+
 inspection_subject_table.add_columns(
     [
         Column('id', 'INTEGER PRIMARY KEY AUTOINCREMENT'),
-        Column('subject', 'TEXT')
+        Column('subject', 'TEXT', 'INSPECTION TYPE',
+               'split_inspection_subject')
     ]
 )
 
 inspection_type_table = Table('r_inspection_type')
+
+def split_inspection_type(inspection_str):
+    inspection_tuple = inspection_str.split('/')
+    inspection_type = inspection_tuple[1]
+    return inspection_type
+
 inspection_type_table.add_columns(
     [
         Column('id', 'INTEGER PRIMARY KEY AUTOINCREMENT'),
-        Column('type', 'TEXT')
+        Column('type', 'TEXT', 'INSPECTION TYPE',
+               'split_inspection_type')
     ]
 )
 
