@@ -1,5 +1,5 @@
 import re
-import table_schemas as ts
+import dbimport.table_schemas as ts
 
 def create_table_sql(table):
     """Return all SQL to create a table, incl foreign key constraints"""

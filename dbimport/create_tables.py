@@ -21,3 +21,13 @@ def import_row(ts, row):
     for table in ts.all_tables:
         sql = sqlgen.row_insert_sql(table, row)
         print(sql)
+
+def import_all_rows(conn, rows, ts):
+    try:
+        conn.execute('BEGIN')
+        for row_id, row in rows:
+            import_row(ts, row)
+    except:
+        conn.execute('ROLLBACK')
+        raise
+    conn.execute('COMMIT')

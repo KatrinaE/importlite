@@ -1,16 +1,10 @@
 import argparse
-import csv
 import re
 import traceback
 import dbimport.table_schemas as ts
 import dbimport.create_tables as ct
 import dbimport.dbconn as dbconn
-
-def read_csv(path):
-    with open(path, 'rU') as data:
-        reader = csv.DictReader(data)
-        for row in reader:
-            yield row
+import dbimport.csv_util as csv_util
 
 def create_parser():
     parser_desc = 'Create sqlite table(s) from a schema file and ' \
@@ -46,10 +40,8 @@ if __name__ == "__main__":
     csv_filename = args.file
     if csv_filename is not None:
         print('Importing CSV...')
-        conn.execute('BEGIN')
-        for row_id, row in enumerate(read_csv(csv_filename)):
-            import_row(ts, row)
-        conn.execute('COMMIT')
+        rows = enumerate(csv_util.read_csv(csv_filename))
+        ct.import_all_rows(conn, rows, ts)
         print('Successfully imported CSV')
 
     conn.close()
