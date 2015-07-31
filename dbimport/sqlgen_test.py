@@ -87,7 +87,9 @@ class TestDBMethods(unittest.TestCase):
         self.assertEqual(expected_sql, actual_sql)
 
     def test_pre_process_value(self):
-        col = Column('test_col', 'TEXT', None, 'test_callback')
+        def test_callback(test_col_str):
+            return 'callback succeeded'
+        col = Column('test_col', 'TEXT', None, test_callback)
         processed_val = sqlgen.pre_process_value(col, 'test text')
         self.assertEqual(processed_val, 'callback succeeded')
 

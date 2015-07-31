@@ -55,8 +55,7 @@ def remove_commas(row):
 def pre_process_value(col, value):
     """Strip whitespace and optionally apply a callback func"""
     if col.callback is not None:
-        callback_func = getattr(ts, col.callback)
-        value = callback_func(value)
+        value = col.callback(value)
     return value.strip()
 
 

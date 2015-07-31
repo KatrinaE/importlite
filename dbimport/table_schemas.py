@@ -127,7 +127,7 @@ inspection_subject_table.add_columns(
     [
         Column('id', 'INTEGER PRIMARY KEY AUTOINCREMENT'),
         Column('subject', 'TEXT', 'INSPECTION TYPE',
-               'split_inspection_subject')
+               split_inspection_subject)
     ]
 )
 
@@ -142,7 +142,7 @@ inspection_type_table.add_columns(
     [
         Column('id', 'INTEGER PRIMARY KEY AUTOINCREMENT'),
         Column('type', 'TEXT', 'INSPECTION TYPE',
-               'split_inspection_type')
+               split_inspection_type)
     ]
 )
 
@@ -184,8 +184,3 @@ all_tables = (
     inspection_type_table,
     inspection_event_table
 )
-
-# TODO: move this into the test suite as soon as table_schemas is not
-# hardcoded here
-def test_callback(test_col_str):
-    return 'callback succeeded'
