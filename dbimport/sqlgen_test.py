@@ -43,8 +43,8 @@ class TestDBMethods(unittest.TestCase):
 
     def test_basic_create_table_sql(self):
         expected_sql = "CREATE TABLE basic_table (" \
-                       "id INTEGER PRIMARY KEY AUTOINCREMENT, " \
                        "date_field DATE, " \
+                       "id INTEGER PRIMARY KEY AUTOINCREMENT, " \
                        "integer_field INTEGER, " \
                        "text_field TEXT);"
         actual_sql = sqlgen.basic_create_table_sql(self.basic_table)
@@ -63,8 +63,8 @@ class TestDBMethods(unittest.TestCase):
 
     def test_create_table_sql(self):
         expected_sql = "CREATE TABLE foreign_key_table (" \
-                       "id INTEGER PRIMARY KEY AUTOINCREMENT, " \
                        "basic_id INTEGER, " \
+                       "id INTEGER PRIMARY KEY AUTOINCREMENT, " \
                        "really_basic_id INTEGER, " \
                        "FOREIGN KEY(basic_id) " \
                        "REFERENCES basic_table(id), " \

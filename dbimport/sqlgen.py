@@ -19,9 +19,10 @@ def basic_create_table_sql(table):
     to make columns of the given name/type combinations.
     """
     sql = "CREATE TABLE {name} (".format(name=table.name)
-    for col in sorted(table.columns.values()):
+    col_names = list(table.columns.keys())
+    for col_name in sorted(col_names):
+        col = table.columns[col_name]
         sql += "{fn} {ff}, ".format(fn=col.name, ff=col.col_type)
-
     sql = re.sub(', $', '', sql) + ");"
     return sql
 
@@ -29,7 +30,9 @@ def basic_create_table_sql(table):
 def foreign_key_constraint_sql(table):
     """Return the SQL to add foreign key constraints to a given table"""
     sql = ''
-    for foreign_key in sorted(table.foreign_keys.values()):
+    fk_names = list(table.foreign_keys.keys())
+    for fk_name in sorted(fk_names):
+        foreign_key = table.foreign_keys[fk_name]
         sql += "FOREIGN KEY({fn}) REFERENCES {tn}({kc}), ".format(
             fn=foreign_key.from_col,
             tn=foreign_key.to_table.name,
