@@ -1,10 +1,10 @@
 import argparse
 import csv
-import sqlite3
 import re
-import dbimport.table_schemas as ts
-import dbimport.sqlgen as sqlgen
 import traceback
+import dbimport.table_schemas as ts
+import dbimport.create_tables as ct
+import dbimport.dbconn as dbconn
 
 def read_csv(path):
     with open(path, 'rU') as data:
@@ -27,41 +27,20 @@ def create_parser():
     return parser
 
 
-def create_tables(c):
-    for t in ts.all_tables:
-        sql = sqlgen.create_table_sql(t)
-        print(sql)
-        c.execute(sql)
-
-
-def import_row(row):
-    row = sqlgen.remove_commas(row)
-    for table in ts.all_tables:
-        sql = sqlgen.row_insert_sql(table, row)
-        print(sql)
-
-
-
 if __name__ == "__main__":
     parser = create_parser()
     args = parser.parse_args()
 
-    conn = sqlite3.connect(args.database, 5.0, 0, None)
-    conn.text_factory = str
-    c = conn.cursor()
+    [conn, c] = dbconn.conn(args.database)
 
     create_tables = not(args.no_create)
     if create_tables == True:
         print('Creating tables...')
         try:
-            conn.execute('BEGIN')
-            create_tables(c)
+            ct.create_all_tables(conn, c, ts)
         except Exception as e:
-            conn.execute('ROLLBACK')
-            conn.close()
             traceback.print_exc()
             exit(1)
-        conn.execute('COMMIT')
         print("Successfully created tables")
 
     csv_filename = args.file
@@ -69,7 +48,7 @@ if __name__ == "__main__":
         print('Importing CSV...')
         conn.execute('BEGIN')
         for row_id, row in enumerate(read_csv(csv_filename)):
-            import_row(row)
+            import_row(ts, row)
         conn.execute('COMMIT')
         print('Successfully imported CSV')
 
