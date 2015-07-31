@@ -184,3 +184,8 @@ all_tables = (
     inspection_type_table,
     inspection_event_table
 )
+
+# TODO: move this into the test suite as soon as table_schemas is not
+# hardcoded here
+def test_callback(test_col_str):
+    return 'callback succeeded'

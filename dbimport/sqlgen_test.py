@@ -86,5 +86,11 @@ class TestDBMethods(unittest.TestCase):
         actual_sql = sqlgen.row_insert_sql(self.basic_table, row)
         self.assertEqual(expected_sql, actual_sql)
 
+    def test_pre_process_value(self):
+        col = Column('test_col', 'TEXT', None, 'test_callback')
+        processed_val = sqlgen.pre_process_value(col, 'test text')
+        self.assertEqual(processed_val, 'callback succeeded')
+
+
 if __name__ == '__main__':
     unittest.main()

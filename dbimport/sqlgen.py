@@ -1,5 +1,5 @@
 import re
-import dbimport.table_schemas as ts
+import table_schemas as ts
 
 def create_table_sql(table):
     """Return all SQL to create a table, incl foreign key constraints"""
@@ -49,6 +49,14 @@ def remove_commas(row):
     return row
 
 
+def pre_process_value(col, value):
+    """Strip whitespace and optionally apply a callback func"""
+    if col.callback is not None:
+        callback_func = getattr(ts, col.callback)
+        value = callback_func(value)
+    return value.strip()
+
+
 def row_insert_sql(table, row):
     """Return the SQL to add the given row to the given table"""
     columns = []
@@ -56,14 +64,10 @@ def row_insert_sql(table, row):
     for csv_field, value in sorted(row.items()):
         if csv_field in table.csv_col_map:
             col_name = table.csv_col_map[csv_field]
-            columns.append(col_name)
             col = table.columns[col_name]
+            columns.append(col_name)
 
-            if col.callback is not None:
-                callback_func = getattr(ts, col.callback)
-                value = callback_func(value)
-
-            value = value.strip()
+            value = pre_process_value(col, value)
             values.append(value)
 
     col_str = db_format(columns)
