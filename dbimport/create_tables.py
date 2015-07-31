@@ -12,7 +12,6 @@ def create_all_tables(conn, c, ts):
             create_table(c, t)
     except:
         conn.execute('ROLLBACK')
-        conn.close()
         raise
     conn.execute('COMMIT')
         

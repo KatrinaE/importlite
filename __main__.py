@@ -33,6 +33,7 @@ if __name__ == "__main__":
         try:
             ct.create_all_tables(conn, c, ts)
         except Exception as e:
+            conn.close()
             traceback.print_exc()
             exit(1)
         print("Successfully created tables")
@@ -40,8 +41,13 @@ if __name__ == "__main__":
     csv_filename = args.file
     if csv_filename is not None:
         print('Importing CSV...')
-        rows = enumerate(csv_util.read_csv(csv_filename))
-        ct.import_all_rows(conn, rows, ts)
+        try:
+            rows = enumerate(csv_util.read_csv(csv_filename))
+            ct.import_all_rows(conn, rows, ts)
+        except Exception as e:
+            conn.close()
+            traceback.print_exc()
+            exit(1)
         print('Successfully imported CSV')
 
     conn.close()
