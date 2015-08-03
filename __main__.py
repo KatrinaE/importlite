@@ -1,7 +1,7 @@
 import argparse
 import re
 import traceback
-import dbimport.table_schemas as ts
+import importlib.machinery
 import dbimport.create_tables as ct
 import dbimport.dbconn as dbconn
 import dbimport.csv_util as csv_util
@@ -24,14 +24,18 @@ def create_parser():
 if __name__ == "__main__":
     parser = create_parser()
     args = parser.parse_args()
+    print(args)
 
     [conn, c] = dbconn.conn(args.database)
+
+    table_schema = importlib.machinery.SourceFileLoader(
+       'table_schema', args.schema_file).load_module()
 
     create_tables = not(args.no_create)
     if create_tables == True:
         print('Creating tables...')
         try:
-            ct.create_all_tables(conn, c, ts)
+            ct.create_all_tables(conn, c, table_schema.all_tables)
         except Exception as e:
             conn.close()
             traceback.print_exc()
@@ -43,7 +47,7 @@ if __name__ == "__main__":
         print('Importing CSV...')
         try:
             rows = enumerate(csv_util.read_csv(csv_filename))
-            ct.import_all_rows(conn, rows, ts)
+            ct.import_all_rows(conn, table_schema.all_tables, rows)
         except Exception as e:
             conn.close()
             traceback.print_exc()
