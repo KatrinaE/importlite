@@ -1,7 +1,7 @@
 import unittest
 
 import sqlgen
-from table_schemas import Table, Column, ForeignKey
+from schema import Table, Column, ForeignKey
 
 
 class TestDBMethods(unittest.TestCase):
