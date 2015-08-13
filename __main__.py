@@ -14,10 +14,10 @@ def create_parser():
                         help='Path to file storing table schemas')
     parser.add_argument('database', metavar='database', type=str,
                         help='Path to sqlite database')
-    parser.add_argument('-f','--file', metavar='CSV FILE',
-                        help='Path to CSV data to be imported'),
     parser.add_argument('-n','--no_create', action='store_true',
                         help='Do not create tables - import data only')
+    parser.add_argument('-f','--file', metavar='CSV FILE',
+                        help='Path to CSV data to be imported'),
     return parser
 
 
