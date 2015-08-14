@@ -40,8 +40,29 @@ def foreign_key_constraint_sql(table):
     return sql
 
 
-def db_format(values):
-    return "'{0}'".format("','".join(values))
+def db_col_format(values):
+    return "{0}".format(", ".join(values))
+
+
+def db_val_format(values):
+    return "'{0}'".format("', '".join(values))
+
+
+def insert_sql(table, row_data):
+    col_str = db_col_format(row_data.keys())
+    val_str = db_val_format(row_data.values())
+    sql = "INSERT INTO {0} ({1}) VALUES {2};"
+    sql = sql.format(table.name, col_str, val_str)
+    return sql
+
+
+def query_sql(table, col_name, value, return_cols='*'):
+    if isinstance(return_cols, str):
+        return_cols = [return_cols]
+    return_col_str = db_col_format(return_cols)
+    sql = "SELECT {0} FROM {1} WHERE {2} = {3};"
+    sql = sql.format(return_col_str, table, col_name, value)
+    return sql
 
 
 def remove_commas(row):
@@ -71,9 +92,9 @@ def row_insert_sql(table, row):
             value = pre_process_value(col, value)
             values.append(value)
 
-    col_str = db_format(columns)
-    val_str = db_format(values)
-    sql = "INSERT INTO {0} ({1}) VALUES {2}"
+    col_str = db_col_format(columns)
+    val_str = db_val_format(values)
+    sql = "INSERT INTO {0} ({1}) VALUES {2};"
     sql = sql.format(table.name, col_str, val_str)
     print(sql)
     return sql

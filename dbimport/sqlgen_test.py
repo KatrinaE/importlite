@@ -1,4 +1,5 @@
 import unittest
+import collections
 
 import sqlgen
 from schema import Table, Column, ForeignKey
@@ -73,11 +74,36 @@ class TestDBMethods(unittest.TestCase):
         actual_sql = sqlgen.create_table_sql(self.foreign_key_table)
         self.assertEqual(expected_sql, actual_sql)
 
+    def test_insert_sql(self):
+        expected_sql = "INSERT INTO basic_table (id, date_field) " \
+                       "VALUES '12345', '2010-01-01';"
+        row_data = {'id' : '12345', 'date_field' : '2010-01-01'}
+        # Force dict field order so actual SQL is consistent.
+        row_data = collections.OrderedDict(
+            sorted(row_data.items(), reverse=True))
+        actual_sql = sqlgen.insert_sql(self.basic_table, row_data)
+        self.assertEqual(expected_sql, actual_sql)
+
+    def test_query_sql(self):
+        expected_sql = "SELECT * FROM basic_table WHERE " \
+                       "date_field = 2010-01-01;"
+        actual_sql = sqlgen.query_sql(self.basic_table.name,
+                                      'date_field', '2010-01-01')
+        self.assertEqual(expected_sql, actual_sql)
+
+    def test_query_sql_specified_cols(self):
+        expected_sql = "SELECT id, integer_field FROM basic_table WHERE " \
+                       "date_field = 2010-01-01;"
+        actual_sql = sqlgen.query_sql(self.basic_table.name,
+                                      'date_field', '2010-01-01',
+                                      ['id', 'integer_field'])
+        self.assertEqual(expected_sql, actual_sql)
+
     def test_row_insert_sql(self):
         expected_sql = "INSERT INTO basic_table " \
-                       "('date_field','integer_field'," \
-                       "'text_field') VALUES '2010-01-01'," \
-                       "'12345','hello'"
+                       "(date_field, integer_field, " \
+                       "text_field) VALUES '2010-01-01', " \
+                       "'12345', 'hello';"
         row = {
             'csv_date_field': '2010-01-01',
             'csv_integer_field': '12345',
