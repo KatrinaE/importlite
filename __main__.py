@@ -2,7 +2,7 @@ import argparse
 import re
 import traceback
 import importlib.machinery
-import dbimport.create_tables as ct
+import dbimport.dbwrappers as dbwrappers
 import dbimport.dbconn as dbconn
 import dbimport.csv_util as csv_util
 
@@ -35,7 +35,7 @@ if __name__ == "__main__":
     if create_tables == True:
         print('Creating tables...')
         try:
-            ct.create_all_tables(conn, c, table_schema.all_tables)
+            dbwrappers.create_all_tables(conn, c, table_schema.all_tables)
         except Exception as e:
             conn.close()
             traceback.print_exc()
@@ -47,7 +47,7 @@ if __name__ == "__main__":
         print('Importing CSV...')
         try:
             rows = enumerate(csv_util.read_csv(csv_filename))
-            ct.import_all_rows(conn, table_schema.all_tables, rows)
+            dbwrappers.import_all_rows(conn, table_schema.all_tables, rows)
         except Exception as e:
             conn.close()
             traceback.print_exc()
