@@ -11,11 +11,11 @@ def create_all_tables(conn, c, tables):
         raise
     conn.execute('COMMIT')
         
-def import_all_rows(conn, tables, rows):
+def import_all_rows(conn, c, tables, rows):
     try:
         conn.execute('BEGIN')
         for row_id, row in rows:
-            dbconn.import_row(tables, row)
+            dbconn.import_row(c, tables, row)
     except:
         conn.execute('ROLLBACK')
         raise
