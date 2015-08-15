@@ -120,5 +120,12 @@ class TestDBMethods(unittest.TestCase):
         self.assertEqual(processed_val, 'callback succeeded')
 
 
+    def test_remove_commas_and_apostrophes(self):
+        text = "Hello there, I've been waiting for you."
+        expected_val = "Hello there Ive been waiting for you."
+        actual_val = sqlgen.remove_commas_and_apostrophes(text)
+        self.assertEqual(expected_val, actual_val)
+
+
 if __name__ == '__main__':
     unittest.main()

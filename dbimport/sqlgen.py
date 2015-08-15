@@ -65,11 +65,11 @@ def query_sql(table, col_name, value, return_cols='*'):
     return sql
 
 
-def remove_commas(row):
-    """Remove commas from values because sqlite can't handle them"""
-    for field, value in row.items():
-        row[field] = re.sub(',', '', value)
-    return row
+def remove_commas_and_apostrophes(value):
+    """Remove commas and single quotes from all values in row.
+
+    Sqlite can't handle them."""
+    return re.sub("[,']", '', value)
 
 
 def pre_process_value(col, value):
