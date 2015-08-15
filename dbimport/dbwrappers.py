@@ -24,7 +24,7 @@ def import_all_rows(conn, c, tables, rows):
 def lookup_foreign_key(c, table, col_name, value):
     foreign_table = foreign_key.table
     foreign_col = table.foreign_keys[col_name]
-    sql = sqlgen.query_sql(foreign_table.name, foreign_col.name, value, 'id')
+    sql = sqlgen.query_sql(foreign_table, foreign_col.name, value, 'id')
     foreign_ids = c.execute(sql)
 
     if len(foreign_ids) == 0:

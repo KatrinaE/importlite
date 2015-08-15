@@ -87,14 +87,14 @@ class TestDBMethods(unittest.TestCase):
     def test_query_sql(self):
         expected_sql = "SELECT * FROM basic_table WHERE " \
                        "date_field = '2010-01-01';"
-        actual_sql = sqlgen.query_sql(self.basic_table.name,
+        actual_sql = sqlgen.query_sql(self.basic_table,
                                       'date_field', '2010-01-01')
         self.assertEqual(expected_sql, actual_sql)
 
     def test_query_sql_specified_cols(self):
         expected_sql = "SELECT id, integer_field FROM basic_table WHERE " \
                        "date_field = '2010-01-01';"
-        actual_sql = sqlgen.query_sql(self.basic_table.name,
+        actual_sql = sqlgen.query_sql(self.basic_table,
                                       'date_field', '2010-01-01',
                                       ['id', 'integer_field'])
         self.assertEqual(expected_sql, actual_sql)
