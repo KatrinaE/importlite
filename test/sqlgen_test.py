@@ -76,7 +76,7 @@ class TestDBMethods(unittest.TestCase):
 
     def test_insert_sql(self):
         expected_sql = "INSERT INTO basic_table (id, date_field) " \
-                       "VALUES '12345', '2010-01-01';"
+                       "VALUES ('12345', '2010-01-01');"
         row_data = {'id' : '12345', 'date_field' : '2010-01-01'}
         # Force dict field order so actual SQL is consistent.
         row_data = collections.OrderedDict(

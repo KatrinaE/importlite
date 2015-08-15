@@ -51,7 +51,7 @@ def db_val_format(values):
 def insert_sql(table, row_data):
     col_str = db_col_format(row_data.keys())
     val_str = db_val_format(row_data.values())
-    sql = "INSERT INTO {0} ({1}) VALUES {2};"
+    sql = "INSERT INTO {0} ({1}) VALUES ({2});"
     sql = sql.format(table.name, col_str, val_str)
     return sql
 
