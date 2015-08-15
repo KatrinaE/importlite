@@ -1,8 +1,8 @@
 import unittest
 import collections
 
-import sqlgen
-from schema import Table, Column, ForeignKey
+import dbimport.sqlgen as sqlgen
+from dbimport.schema import Table, Column, ForeignKey
 
 
 class TestDBMethods(unittest.TestCase):
