@@ -60,7 +60,7 @@ def query_sql(table, col_name, value, return_cols='*'):
     if isinstance(return_cols, str):
         return_cols = [return_cols]
     return_col_str = db_col_format(return_cols)
-    sql = "SELECT {0} FROM {1} WHERE {2} = {3};"
+    sql = "SELECT {0} FROM {1} WHERE {2} = '{3}';"
     sql = sql.format(return_col_str, table, col_name, value)
     return sql
 
