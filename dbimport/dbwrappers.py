@@ -21,17 +21,28 @@ def import_all_rows(conn, c, tables, rows):
         raise
     conn.execute('COMMIT')
 
-def lookup_foreign_key(c, table, col_name, value):
-    foreign_table = foreign_key.table
-    foreign_col = table.foreign_keys[col_name]
-    sql = sqlgen.query_sql(foreign_table, foreign_col.name, value, 'id')
-    foreign_ids = c.execute(sql)
 
-    if len(foreign_ids) == 0:
-        msg = "{0} table has no entry '{1}' in the {2} column"
-        raise Exception(msg.format(foreign_table.name, row[csv_col], col_name))
-    elif len(foreign_ids) > 1:
-        msg = "{0} table has more than one row with {1} = {2}"
-        raise Exception(msg.format(foreign_table.name, col_name, row[csv_col]))
+class LookupForeignKeyException(Exception):
+    pass
+
+def lookup_foreign_key(c, table, foreign_key, matching_col, value):
+    foreign_key = table.foreign_keys[foreign_key.from_col]
+    sql = sqlgen.query_sql(foreign_key.to_table,
+                           matching_col, value, foreign_key.to_col)
+    foreign_key_tuples = c.execute(sql).fetchall()
+    foreign_keys = [fk[0] for fk in foreign_key_tuples]
+
+    if len(foreign_keys) == 0:
+        msg = "{0} table has no row with '{1}' in the {2} column"
+        raise LookupForeignKeyException(msg.format(
+            foreign_key.to_table.name, value, matching_col))
+    elif len(foreign_keys) > 1:
+        msg = "{0} table has more than one row with {1} = '{2}'"
+        raise LookupForeignKeyException(msg.format(
+            foreign_key.to_table.name, matching_col, value))
+    elif foreign_keys[0] == None:
+        msg = "'{0}' column is empty for row where {1} == '{3}' in {3}"
+        raise LookupForeignKeyException(msg.format(
+            foreign_key.to_col, matching_col, value, foreign_key.to_table.name))
     else:
         return foreign_keys[0]
