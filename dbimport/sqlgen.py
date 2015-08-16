@@ -40,8 +40,8 @@ def foreign_key_constraint_sql(table):
     return sql
 
 
-def db_col_format(values):
-    return "{0}".format(", ".join(values))
+def db_col_format(col_names):
+    return "{0}".format(", ".join(col_names))
 
 
 def db_val_format(values):
