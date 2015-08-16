@@ -2,6 +2,7 @@ import unittest
 import collections
 
 import dbimport.sqlgen as sqlgen
+import dbimport.csv_util as csv_util
 from dbimport.schema import Table, Column, ForeignKey
 
 
@@ -123,7 +124,7 @@ class TestDBMethods(unittest.TestCase):
     def test_remove_commas_and_apostrophes(self):
         text = "Hello there, I've been waiting for you."
         expected_val = "Hello there Ive been waiting for you."
-        actual_val = sqlgen.remove_commas_and_apostrophes(text)
+        actual_val = csv_util.remove_commas_and_apostrophes(text)
         self.assertEqual(expected_val, actual_val)
 
 
