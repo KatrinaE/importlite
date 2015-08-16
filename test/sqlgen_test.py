@@ -100,19 +100,6 @@ class TestDBMethods(unittest.TestCase):
                                       ['id', 'integer_field'])
         self.assertEqual(expected_sql, actual_sql)
 
-    def test_row_insert_sql(self):
-        expected_sql = "INSERT INTO basic_table " \
-                       "(date_field, integer_field, " \
-                       "text_field) VALUES '2010-01-01', " \
-                       "'12345', 'hello';"
-        row = {
-            'csv_date_field': '2010-01-01',
-            'csv_integer_field': '12345',
-            'csv_text_field': 'hello'
-        }
-        actual_sql = sqlgen.row_insert_sql(self.basic_table, row)
-        self.assertEqual(expected_sql, actual_sql)
-
     def test_pre_process_value(self):
         def test_callback(test_col_str):
             return 'callback succeeded'

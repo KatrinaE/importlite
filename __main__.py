@@ -47,7 +47,7 @@ if __name__ == "__main__":
         print('Importing CSV...')
         try:
             rows = enumerate(csv_util.read_csv(csv_filename))
-            dbwrappers.import_all_rows(conn, table_schema.all_tables, rows)
+            dbwrappers.import_all_rows(conn, c, table_schema.all_tables, rows)
         except Exception as e:
             conn.close()
             traceback.print_exc()

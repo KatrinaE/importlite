@@ -16,12 +16,34 @@ def create_all_tables(conn, c, tables):
         conn.execute('ROLLBACK')
         raise
     conn.execute('COMMIT')
-        
+
+
+def import_row_to_table(c, table, row):
+    fields_to_import = [col.csv_name for col in table.columns.values()]
+    row_data = {}
+    for csv_field, value in sorted(row.items()):
+        if csv_field in fields_to_import:
+            col = csv_util.get_destination_col(table, csv_field)
+            if is_foreign_key(col, table):
+                value = lookup_foreign_key(c, table, col, csv_field, value)
+            else:
+                value = sqlgen.pre_process_value(col, value)
+            row_data[col.name] = value
+    sql = sqlgen.insert_sql(table, row_data)
+    c.execute(sql)
+
+
+def import_row_to_all_tables(c, tables, raw_row):
+    row = csv_util.scrub_row(raw_row)
+    for table in tables:
+        import_row_to_table(c, table, row)
+
+
 def import_all_rows(conn, c, tables, rows):
     try:
         conn.execute('BEGIN')
         for row_id, row in rows:
-            dbconn.import_row(c, tables, row)
+            import_row_to_all_tables(c, tables, row)
     except:
         conn.execute('ROLLBACK')
         raise

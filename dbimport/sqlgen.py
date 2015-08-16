@@ -71,24 +71,3 @@ def pre_process_value(col, value):
     if col.callback is not None:
         value = col.callback(value)
     return value.strip()
-
-
-def row_insert_sql(table, row):
-    """Return the SQL to add the given row to the given table"""
-    columns = []
-    values = []
-    for csv_field, value in sorted(row.items()):
-        if csv_field in table.csv_col_map:
-            col_name = table.csv_col_map[csv_field]
-            col = table.columns[col_name]
-            columns.append(col_name)
-
-            value = pre_process_value(col, value)
-            values.append(value)
-
-    col_str = db_col_format(columns)
-    val_str = db_val_format(values)
-    sql = "INSERT INTO {0} ({1}) VALUES {2};"
-    sql = sql.format(table.name, col_str, val_str)
-    print(sql)
-    return sql
