@@ -45,7 +45,8 @@ def db_col_format(values):
 
 
 def db_val_format(values):
-    return "'{0}'".format("', '".join(values))
+    str_values = [str(val) for val in values]
+    return "'{0}'".format("', '".join(str_values))
 
 
 def insert_sql(table, row_data):
