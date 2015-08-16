@@ -7,10 +7,6 @@ def conn(database):
     c = conn.cursor()
     return [conn, c]
 
-def create_table(c, table):
-    sql = sqlgen.create_table_sql(table)
-    print(sql)
-    #c.execute(sql)
 
 def import_row(c, tables, row):
     row = sqlgen.remove_commas(row)

@@ -1,11 +1,16 @@
-import dbimport.dbconn as dbconn
 import dbimport.sqlgen as sqlgen
+
+
+def create_table(c, table):
+    sql = sqlgen.create_table_sql(table)
+    c.execute(sql)
+
 
 def create_all_tables(conn, c, tables):
     try:
         conn.execute('BEGIN')
         for t in tables:
-            dbconn.create_table(c, t)
+            create_table(c, t)
     except:
         conn.execute('ROLLBACK')
         raise
