@@ -86,18 +86,27 @@ class TestDBMethods(unittest.TestCase):
         self.assertEqual(expected_sql, actual_sql)
 
     def test_query_sql(self):
-        expected_sql = "SELECT * FROM basic_table WHERE " \
-                       "date_field = '2010-01-01';"
+        expected_sql = "SELECT * FROM basic_table WHERE 1 " \
+                       "AND date_field = '2010-01-01';"
         actual_sql = sqlgen.query_sql(self.basic_table,
-                                      'date_field', '2010-01-01')
+                                      {'date_field': '2010-01-01'})
         self.assertEqual(expected_sql, actual_sql)
 
     def test_query_sql_specified_cols(self):
-        expected_sql = "SELECT id, integer_field FROM basic_table WHERE " \
-                       "date_field = '2010-01-01';"
+        expected_sql = "SELECT id, integer_field FROM basic_table WHERE 1 " \
+                       "AND date_field = '2010-01-01';"
         actual_sql = sqlgen.query_sql(self.basic_table,
-                                      'date_field', '2010-01-01',
+                                      {'date_field': '2010-01-01'},
                                       ['id', 'integer_field'])
+        self.assertEqual(expected_sql, actual_sql)
+
+    def test_query_sql_multiple_parameters(self):
+        expected_sql = "SELECT * FROM basic_table WHERE 1 " \
+                       "AND date_field = '2010-01-01' " \
+                       "AND text_field = 'foo';"
+        actual_sql = sqlgen.query_sql(self.basic_table,
+                                      {'date_field': '2010-01-01',
+                                       'text_field': 'foo'})
         self.assertEqual(expected_sql, actual_sql)
 
     def test_pre_process_value(self):

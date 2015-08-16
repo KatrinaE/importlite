@@ -57,12 +57,14 @@ def insert_sql(table, row_data):
     return sql
 
 
-def query_sql(table, col_name, value, return_cols='*'):
+def query_sql(table, query_data, return_cols='*'):
     if isinstance(return_cols, str):
         return_cols = [return_cols]
     return_col_str = db_col_format(return_cols)
-    sql = "SELECT {0} FROM {1} WHERE {2} = '{3}';"
-    sql = sql.format(return_col_str, table.name, col_name, value)
+    sql = "SELECT {0} FROM {1} WHERE 1".format(return_col_str, table.name)
+    for col_name, value in sorted(query_data.items()):
+        sql += " AND {0} = '{1}'".format(col_name, value)
+    sql += ";"
     return sql
 
 

@@ -59,8 +59,7 @@ def lookup_foreign_key(c, table, col, csv_field, value):
                                                         csv_field)
     value = sqlgen.pre_process_value(matching_foreign_col, value)
     foreign_col_name = matching_foreign_col.name
-    sql = sqlgen.query_sql(foreign_key.to_table, foreign_col_name,
-                           value, foreign_key.to_col)
+    sql = sqlgen.query_sql(foreign_key.to_table, {foreign_col_name: value})
     foreign_key_tuples = c.execute(sql).fetchall()
     foreign_keys = [fk[0] for fk in foreign_key_tuples]
 
