@@ -57,3 +57,7 @@ def lookup_foreign_key(c, table, col, csv_field, value):
             foreign_key.to_table.name))
     else:
         return foreign_keys[0]
+
+
+def is_foreign_key(col, table):
+    return col.name in table.foreign_keys.keys()
