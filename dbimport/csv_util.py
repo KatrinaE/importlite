@@ -14,3 +14,8 @@ def remove_commas_and_apostrophes(value):
 
     Sqlite can't handle them."""
     return re.sub("[,']", '', value)
+
+
+def scrub_row(row):
+    return {csv_field: remove_commas_and_apostrophes(value)
+            for csv_field, value in row.items()}
