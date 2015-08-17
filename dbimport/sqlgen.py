@@ -68,6 +68,10 @@ def query_sql(table, query_data, return_cols='*'):
     return sql
 
 
+def schema_sql(table):
+    return 'PRAGMA TABLE_INFO({});'.format(table.name)
+
+
 def pre_process_value(col, value):
     """Strip whitespace and optionally apply a callback func"""
     if col.callback is not None:

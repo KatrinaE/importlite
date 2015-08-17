@@ -29,8 +29,12 @@ def import_row_to_table(c, table, row):
             else:
                 value = sqlgen.pre_process_value(col, value)
             row_data[col.name] = value
-    sql = sqlgen.insert_sql(table, row_data)
-    c.execute(sql)
+
+    if table.expect_unique == True and row_exists(c, table, row_data):
+        return
+    else:
+        sql = sqlgen.insert_sql(table, row_data)
+        c.execute(sql)
 
 
 def import_row_to_all_tables(c, tables, raw_row):
@@ -59,9 +63,7 @@ def lookup_foreign_key(c, table, col, csv_field, value):
                                                         csv_field)
     value = sqlgen.pre_process_value(matching_foreign_col, value)
     foreign_col_name = matching_foreign_col.name
-    sql = sqlgen.query_sql(foreign_key.to_table, {foreign_col_name: value})
-    foreign_key_tuples = c.execute(sql).fetchall()
-    foreign_keys = [fk[0] for fk in foreign_key_tuples]
+    foreign_keys = query(c, foreign_key.to_table, {foreign_col_name: value})
 
     if len(foreign_keys) == 0:
         msg = "{0} table has no row with '{1}' in the {2} column"
@@ -77,8 +79,30 @@ def lookup_foreign_key(c, table, col, csv_field, value):
             foreign_key.to_col, foreign_col_name, value,
             foreign_key.to_table.name))
     else:
-        return foreign_keys[0]
+        return foreign_keys[0][foreign_key.to_col]
 
 
 def is_foreign_key(col, table):
     return col.name in table.foreign_keys.keys()
+
+
+def get_table_schema(c, table):
+    sql = sqlgen.schema_sql(table)
+    table_info = c.execute(sql).fetchall()
+    schema = [field[1] for field in table_info]
+    return schema
+
+
+def query(c, table, query_data):
+    sql = sqlgen.query_sql(table, query_data)
+    rows = c.execute(sql).fetchall()
+    schema = get_table_schema(c, table)
+    row_dicts = [dict(zip(schema, row)) for row in rows]
+    return row_dicts
+
+def row_exists(c, table, row_data):
+    existing_rows = query(c, table, row_data)
+    if existing_rows:
+        return True
+    else:
+        return False
