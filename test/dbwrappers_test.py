@@ -33,13 +33,12 @@ class TestDBMethods(unittest.TestCase):
         )
 
         self.foreign_key_table = Table('foreign_key_table')
+        self.fk_col_a = Column('id', 'INTEGER PRIMARY KEY AUTOINCREMENT')
+        self.fk_col_b = Column('basic_id', 'INTEGER')
+        self.fk_col_c = Column('really_basic_id', 'INTEGER')
+
         self.foreign_key_table.add_columns(
-            [
-                Column('id', 'INTEGER PRIMARY KEY AUTOINCREMENT'),
-                Column('basic_id', 'INTEGER'),
-                Column('really_basic_id', 'INTEGER')
-            ]
-        )
+            [self.fk_col_a, self.fk_col_b, self.fk_col_c])
 
         self.foreign_key_a = ForeignKey('basic_id', self.basic_table, 'id')
         self.foreign_key_b = ForeignKey('really_basic_id',
@@ -80,34 +79,34 @@ class TestDBMethods(unittest.TestCase):
         expected_fk = 1
         actual_fk = dbwrappers.lookup_foreign_key(self.c,
                                                   self.foreign_key_table,
-                                                  self.foreign_key_a,
-                                                  'text_field',
+                                                  self.fk_col_b,
+                                                  'csv_text_field',
                                                   'foo')
         self.assertEqual(expected_fk, actual_fk)
 
 
     def test_lookup_foreign_key_missing(self):
         """No row with text_field == 'baz'"""
-        with self.assertRaises(dbwrappers.LookupForeignKeyException):
+        with self.assertRaises(dbwrappers.ForeignKeyException):
             dbwrappers.lookup_foreign_key(self.c, self.foreign_key_table,
-                                          self.foreign_key_a,
-                                          'text_field','baz')
+                                          self.fk_col_b,
+                                          'csv_text_field','baz')
 
 
     def test_lookup_foreign_key_duplicate(self):
         """Table has 2 rows with text_field == 'bar'"""
-        with self.assertRaises(dbwrappers.LookupForeignKeyException):
+        with self.assertRaises(dbwrappers.ForeignKeyException):
             dbwrappers.lookup_foreign_key(self.c, self.foreign_key_table,
-                                          self.foreign_key_a,
-                                          'text_field', 'bar')
+                                          self.fk_col_b,
+                                          'csv_text_field', 'bar')
 
 
     def test_lookup_foreign_key_wrong_field(self):
         """'foo' is in text_field, not in date_field"""
-        with self.assertRaises(dbwrappers.LookupForeignKeyException):
+        with self.assertRaises(dbwrappers.ForeignKeyException):
             dbwrappers.lookup_foreign_key(self.c, self.foreign_key_table,
-                                          self.foreign_key_a,
-                                          'date_field', 'foo')
+                                          self.fk_col_b,
+                                          'csv_date_field', 'foo')
 
 
 if __name__ == '__main__':
