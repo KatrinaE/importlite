@@ -15,7 +15,7 @@ def create_parser():
                         help='Path to sqlite database')
     parser.add_argument('-n','--no_create', action='store_true',
                         help='Do not create tables - import data only')
-    parser.add_argument('-f','--file', metavar='CSV FILE',
+    parser.add_argument('-c','--csv_file', metavar='CSV FILE',
                         help='Path to CSV data to be imported')
     parser.add_argument('-s','--schema_file', metavar='SCHEMA FILE',
                         help='Path to file storing table schema')
@@ -27,9 +27,9 @@ def get_table_schema(args):
         table_schema = importlib.machinery.SourceFileLoader(
             'table_schema', args.schema_file).load_module()
         all_tables = table_schema.all_tables
-    elif args.file:
+    elif args.csv_file:
         print('creating table from file')
-        all_tables = csv_util.guess_schema(args.file)
+        all_tables = csv_util.guess_schema(args.csv_file)
     return all_tables
 
 
@@ -37,7 +37,7 @@ if __name__ == "__main__":
     parser = create_parser()
     args = parser.parse_args()
 
-    if args.schema_file is None and args.file is None:
+    if args.schema_file is None and args.csv_file is None:
         parser.error('CSV file and/or schema file required')
 
     table_definitions = get_table_schema(args)
@@ -54,7 +54,7 @@ if __name__ == "__main__":
             exit(1)
         print("Successfully created tables")
 
-    csv_filename = args.file
+    csv_filename = args.csv_file
     if csv_filename is not None:
         print('Importing CSV...')
         try:
