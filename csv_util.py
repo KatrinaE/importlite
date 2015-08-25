@@ -1,5 +1,6 @@
 import csv
 import re
+from importlite.schema import Table, Column
 
 
 def read_csv(path):
@@ -8,6 +9,79 @@ def read_csv(path):
         for row in reader:
             yield row
 
+
+def guess_schema(path):
+    """Create a best-effort table schema from a CSV"""
+    datatypes = tally_datatypes(enumerate(read_csv(path)))
+    table = Table('importlite_table')
+
+    for col_name, datatypes_tally in datatypes.items():
+        most_freq_datatype = max(datatypes_tally, key=datatypes_tally.count)
+        table.add_column(
+            Column(col_name, most_freq_datatype)
+        )
+    #for col, val in table.columns.items(): print(col)
+    return [table]
+
+
+def tally_datatypes(csv_enumerator):
+    """ Tally the most-commonly found SQLite datatype in each column of a CSV.
+
+        For speed, only check the first 25 rows of the CSV. SQLite is
+	very permissive about datatypes (see note in get_datatype) so a
+	rough estimate of the most common datatype is okay.
+    """
+    datatypes = {}
+    for data_tuple in csv_enumerator:
+        if data_tuple[0] >= 25:
+            break
+        row = data_tuple[1]
+        for col_name, value in row.items():
+            datatype = get_datatype(value)
+            datatypes.setdefault(col_name, []).append(datatype)
+    return datatypes
+
+
+def get_datatype(value):
+    """ Determine most appropriate SQLite datatype for storing value.
+
+        SQLite has only four underlying storage classes: integer, real,
+        text, and blob.
+
+        For compatibility with other flavors of SQL, it's possible to
+        define columns with more specific datatypes (e.g. 'char',
+        'date'), but since these are still mapped to the underlying
+        storage classes there's not much point in using them when
+        generating native SQLite SQL.
+
+        Therefore, this function takes an incoming value and attempts
+        to guess the best SQLite datatype for storing it. This can
+        then be used to help decide the schema of the column where the
+        value will be stored.
+
+        It defaults to the text datatype, not the super-general blob
+        datatype, because read_csv reads each row in as text rather
+        than binary data.
+
+        Unlike in other SQL flavors, misdefining a column's datatype
+        affinity is not fatal, because in the end any type of value
+        can be stored in any column. In the end, the datatype
+        returned by this function is just a suggestion for SQLite.
+
+        See:
+           * https://www.sqlite.org/datatype3.html
+           * http://ericsink.com/mssql_mobile/data_types.html
+           * http://www.techonthenet.com/sqlite/datatypes.php
+    """
+    try:
+        int(value)
+        return 'INTEGER'
+    except ValueError:
+        try:
+           float(value)
+           return 'REAL'
+        except ValueError:
+            return 'TEXT'
 
 def remove_commas_and_apostrophes(value):
     """Remove commas and single quotes from all values in row.

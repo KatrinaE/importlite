@@ -1,3 +1,5 @@
+import re
+
 class Table:
     """Defines a database table schema"""
     def __init__(self, name):
@@ -44,8 +46,15 @@ class Column:
         """
         self.name = name
         self.col_type = col_type
-        self.csv_name = csv_name
         self.callback = callback
+
+        if csv_name is not None:
+            self.csv_name = csv_name
+        else:
+            self.csv_name = name
+
+        self.name = re.sub("[,']", '', self.name)
+        self.name = re.sub("[\s]", '_', self.name)
 
 
 class ForeignKey:
