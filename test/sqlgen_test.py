@@ -1,9 +1,9 @@
 import unittest
 import collections
 
-import dbimport.sqlgen as sqlgen
-import dbimport.csv_util as csv_util
-from dbimport.schema import Table, Column, ForeignKey
+import importlite.sqlgen as sqlgen
+import importlite.csv_util as csv_util
+from importlite.schema import Table, Column, ForeignKey
 
 
 class TestDBMethods(unittest.TestCase):

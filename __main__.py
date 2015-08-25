@@ -2,9 +2,10 @@ import argparse
 import re
 import traceback
 import importlib.machinery
-import dbimport.dbwrappers as dbwrappers
-import dbimport.dbconn as dbconn
-import dbimport.csv_util as csv_util
+
+import importlite.dbwrappers as dbwrappers
+import importlite.dbconn as dbconn
+import importlite.csv_util as csv_util
 
 def create_parser():
     parser_desc = 'Create sqlite table(s) from a schema file and ' \

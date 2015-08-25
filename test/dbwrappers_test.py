@@ -2,8 +2,8 @@ import unittest
 import os
 import sqlite3
 
-import dbimport.dbwrappers as dbwrappers
-from dbimport.schema import Table, Column, ForeignKey
+import importlite.dbwrappers as dbwrappers
+from importlite.schema import Table, Column, ForeignKey
 
 TEST_DB = 'test_db.sqlite3'
 
