@@ -1,7 +1,7 @@
+import sys
 import argparse
 import re
 import traceback
-import importlib.machinery
 
 import importlite.dbwrappers as dbwrappers
 import importlite.dbconn as dbconn
@@ -22,13 +22,23 @@ def create_parser():
     return parser
 
 
+def load_schema_file(filename):
+    v = hex(sys.hexversion)
+    if v >= '0x30300f0':
+        import importlib.machinery
+        table_schema = importlib.machinery.SourceFileLoader(
+            'table_schema', filename).load_module()
+    else:
+        import imp
+        table_schema = imp.load_source('table_schema', filename)
+    return table_schema
+
+
 def get_table_schema(args):
     if args.schema_file:
-        table_schema = importlib.machinery.SourceFileLoader(
-            'table_schema', args.schema_file).load_module()
+        table_schema = load_schema_file(args.schema_file)
         all_tables = table_schema.all_tables
     elif args.csv_file:
-        print('creating table from file')
         all_tables = csv_util.guess_schema(args.csv_file)
     return all_tables
 
