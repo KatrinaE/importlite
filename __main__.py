@@ -25,6 +25,7 @@ def create_parser():
 
 
 def load_schema_file(filename):
+    """Load user-supplied schema file. Use new syntax if Python >= v3.3"""
     v = hex(sys.hexversion)
     if v >= '0x30300f0':
         import importlib.machinery
