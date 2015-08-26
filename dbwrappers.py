@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals
 import importlite.sqlgen as sqlgen
 import importlite.csv_util as csv_util
 

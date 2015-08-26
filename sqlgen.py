@@ -1,4 +1,7 @@
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals
 import re
+import sys
 
 def create_table_sql(table):
     """Return all SQL to create a table, incl foreign key constraints"""
@@ -45,7 +48,10 @@ def db_col_format(col_names):
 
 
 def db_val_format(values):
-    str_values = [str(val) for val in values]
+    if hex(sys.hexversion) < '0x30000f0': # Python 2
+        str_values = [unicode(val) for val in values]
+    else:
+        str_values = [str(val) for val in values]
     return "'{0}'".format("', '".join(str_values))
 
 

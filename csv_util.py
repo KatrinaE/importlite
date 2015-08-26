@@ -1,5 +1,8 @@
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals
 import csv
 import re
+import sys
 from importlite.schema import Table, Column
 
 
@@ -7,6 +10,9 @@ def read_csv(path):
     with open(path, 'rU') as data:
         reader = csv.DictReader(data)
         for row in reader:
+            if hex(sys.hexversion) < '0x30000f0': # Python 2
+                row = {unicode(col_name, "utf-8"): unicode(value, "utf-8")
+	               for col_name, value in row.items()}
             yield row
 
 
