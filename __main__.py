@@ -6,7 +6,6 @@ import re
 import traceback
 
 import importlite.dbwrappers as dbwrappers
-import importlite.dbconn as dbconn
 import importlite.csv_util as csv_util
 
 def create_parser():
@@ -54,7 +53,7 @@ if __name__ == "__main__":
         parser.error('CSV file and/or schema file required')
 
     table_definitions = get_table_schema(args)
-    [conn, c] = dbconn.conn(args.database)
+    [conn, c] = dbwrappers.conn(args.database)
 
     create_tables = not(args.no_create)
     if create_tables == True:

@@ -1,7 +1,15 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+import sqlite3
 import importlite.sqlgen as sqlgen
 import importlite.csv_util as csv_util
+
+
+def conn(database):
+    conn = sqlite3.connect(database, 5.0, 0, None)
+    conn.text_factory = str
+    c = conn.cursor()
+    return [conn, c]
 
 
 def create_table(c, table):
