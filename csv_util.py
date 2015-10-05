@@ -89,15 +89,18 @@ def get_datatype(value):
         except ValueError:
             return 'TEXT'
 
-def remove_commas_and_apostrophes(value):
-    """Remove commas and single quotes from all values in row.
-
-    Sqlite can't handle them."""
-    return re.sub("[,']", '', value)
+def quote_apostrophes(value):
+    """Format single quotes for SQLite.
+    See:
+        * http://www.sqlite.org/lang_expr.html
+        * http://stackoverflow.com/questions/603572/
+            how-to-properly-escape-a-single-quote-for-a-sqlite-database
+    """
+    return re.sub("'", "''", value)
 
 
 def scrub_row(row):
-    return {csv_field: remove_commas_and_apostrophes(value)
+    return {csv_field: quote_apostrophes(value)
             for csv_field, value in row.items()}
 
 
