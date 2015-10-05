@@ -14,14 +14,14 @@ def create_parser():
     parser = argparse.ArgumentParser(description=parser_desc)
     parser.add_argument('database', metavar='database', type=str,
                         help='Path to sqlite database')
-    parser.add_argument('-c','--csv_file', metavar='CSV FILE',
+    parser.add_argument('-c','--csv-file', metavar='CSV FILE',
                         help='Path to CSV data to be imported')
     action = parser.add_mutually_exclusive_group(required=True)
-    action.add_argument('-t', '--table_name', metavar='TABLE NAME',
+    action.add_argument('-t', '--table-name', metavar='TABLE NAME',
                         help='Name of table to create')
-    action.add_argument('-s','--schema_file', metavar='SCHEMA FILE',
+    action.add_argument('-s','--schema-file', metavar='SCHEMA FILE',
                         help='Path to file storing table schema')
-    parser.add_argument('-n','--no_create',
+    parser.add_argument('-n','--no-create',
                         action='store_true',
                         help='Do not create tables - import data only')
     return parser
