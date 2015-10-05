@@ -6,7 +6,7 @@ class Table:
     """Defines a database table schema"""
     def __init__(self, name):
         self.name = name
-        self.expect_unique = False
+        self.unique_rows = False
         self.columns = {}
         self.csv_col_map = {}
         self.foreign_keys = {}

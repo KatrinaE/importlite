@@ -40,7 +40,7 @@ def import_row_to_table(c, table, row):
                 value = sqlgen.pre_process_value(col, value)
             row_data[col.name] = value
 
-    if table.expect_unique == True and row_exists(c, table, row_data):
+    if table.unique_rows == True and row_exists(c, table, row_data):
         return
     else:
         sql = sqlgen.insert_sql(table, row_data)
