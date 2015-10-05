@@ -16,10 +16,10 @@ def read_csv(path):
             yield row
 
 
-def guess_schema(path):
+def guess_schema(table_name, path):
     """Create a best-effort table schema from a CSV"""
     datatypes = tally_datatypes(enumerate(read_csv(path)))
-    table = Table('importlite_table')
+    table = Table(table_name)
 
     for col_name, datatypes_tally in datatypes.items():
         most_freq_datatype = max(datatypes_tally, key=datatypes_tally.count)

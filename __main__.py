@@ -14,11 +14,15 @@ def create_parser():
     parser = argparse.ArgumentParser(description=parser_desc)
     parser.add_argument('database', metavar='database', type=str,
                         help='Path to sqlite database')
-    parser.add_argument('-n','--no_create', action='store_true',
-                        help='Do not create tables - import data only')
     parser.add_argument('-c','--csv_file', metavar='CSV FILE',
                         help='Path to CSV data to be imported')
-    parser.add_argument('-s','--schema_file', metavar='SCHEMA FILE',
+    action = parser.add_mutually_exclusive_group(required=True)
+    action.add_argument('-n','--no_create',
+                        action='store_true',
+                        help='Do not create tables - import data only')
+    action.add_argument('-t', '--table_name', metavar='TABLE NAME',
+                        help='Name of table to create')
+    action.add_argument('-s','--schema_file', metavar='SCHEMA FILE',
                         help='Path to file storing table schema')
     return parser
 
@@ -41,7 +45,7 @@ def get_table_schema(args):
         table_schema = load_schema_file(args.schema_file)
         all_tables = table_schema.all_tables
     elif args.csv_file:
-        all_tables = csv_util.guess_schema(args.csv_file)
+        all_tables = csv_util.guess_schema(args.table_name, args.csv_file)
     return all_tables
 
 
