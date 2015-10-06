@@ -49,7 +49,8 @@ def get_table_schema(args):
     return all_tables
 
 
-if __name__ == "__main__":
+
+def main():
     parser = create_parser()
     args = parser.parse_args()
 
@@ -83,3 +84,7 @@ if __name__ == "__main__":
         print('Successfully imported CSV')
 
     conn.close()
+
+
+if __name__ == "__main__":
+    main()
