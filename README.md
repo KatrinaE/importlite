@@ -38,9 +38,9 @@ ImportLite is a command line utility for importing CSV files into SQLite. It can
 * Compatible with UTF-8 encoded files.
 
 
-Install from the command line with pip, Python's package manager:
+Install from the command line with pip, Python's package manager. The `--pre` flag is necessary because importlite is still at pre-release stage; the latest version is 0.1.0.
 
-    $ pip install importlite
+    $ pip install --pre importlite
 
 
 If you don't have pip, you can also install from source:
